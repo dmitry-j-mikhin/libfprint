@@ -1181,6 +1181,7 @@ fpi_device_elanmoc2_init (FpiDeviceElanMoC2 *self)
 static const FpIdEntry elanmoc2_id_table[] = {
   {.vid = ELANMOC2_VEND_ID, .pid = 0x0c00, .driver_data = ELANMOC2_ALL_DEV},
   {.vid = ELANMOC2_VEND_ID, .pid = 0x0c4c, .driver_data = ELANMOC2_ALL_DEV},
+  {.vid = ELANMOC2_VEND_ID, .pid = 0x0c55, .driver_data = ELANMOC2_ALL_DEV},
   {.vid = ELANMOC2_VEND_ID, .pid = 0x0c5e, .driver_data = ELANMOC2_DEV_0C5E},
   {.vid = ELANMOC2_VEND_ID, .pid = 0x0c7c, .driver_data = ELANMOC2_ALL_DEV},
   {.vid = ELANMOC2_VEND_ID, .pid = 0x0c90, .driver_data = ELANMOC2_ALL_DEV},

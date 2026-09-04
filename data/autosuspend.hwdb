@@ -169,6 +169,7 @@ usb:v04F3p0CA3*
 # Supported by libfprint driver elanmoc2
 usb:v04F3p0C00*
 usb:v04F3p0C4C*
+usb:v04F3p0C55*
 usb:v04F3p0C5E*
 usb:v04F3p0C7C*
 usb:v04F3p0C90*
