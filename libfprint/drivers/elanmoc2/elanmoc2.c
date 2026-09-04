@@ -110,7 +110,7 @@ elanmoc2_cmd_usb_callback (FpiUsbTransfer *transfer,
                                   cmd->in_len);
 
       fpi_usb_transfer_submit (transfer_in,
-                               ELANMOC2_USB_RECV_TIMEOUT,
+                               cmd->is_cancellable ? 0 : ELANMOC2_USB_RECV_TIMEOUT,
                                cmd->is_cancellable ?
                                fpi_device_get_cancellable (device) : NULL,
                                elanmoc2_cmd_usb_callback,
