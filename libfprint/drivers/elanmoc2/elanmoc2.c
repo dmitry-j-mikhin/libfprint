@@ -500,7 +500,7 @@ elanmoc2_identify_verify_report (FpDevice *device, FpPrint *print,
             }
           fp_info ("Identify: no match");
         }
-      fpi_device_identify_report (device, NULL, print, *error);
+      fpi_device_identify_report (device, NULL, print, g_steal_pointer (error));
       return TRUE;
     }
   else
@@ -523,7 +523,9 @@ elanmoc2_identify_verify_report (FpDevice *device, FpPrint *print,
               print = NULL;
             }
         }
-      fpi_device_verify_report (device, result, print, *error);
+      if (*error != NULL)
+        result = FPI_MATCH_ERROR;
+      fpi_device_verify_report (device, result, print, g_steal_pointer (error));
       return result != FPI_MATCH_FAIL;
     }
 }
@@ -604,17 +606,26 @@ elanmoc2_identify_run_state (FpiSsm *ssm, FpDevice *device)
         if (error != NULL)
           {
             fp_info ("Identify failed: %s", error->message);
+            fpi_device_report_finger_status (device, FP_FINGER_STATUS_NONE);
             if (can_retry)
               {
-                elanmoc2_identify_verify_report (device, NULL, &error);
-                fpi_ssm_jump_to_state (ssm, IDENTIFY_IDENTIFY);
+                /* libfprint takes ownership of a reported retry error and
+                 * the action has to be completed afterwards; the caller
+                 * (e.g. fprintd) restarts the verification itself. */
+                if (fpi_device_get_current_action (device) == FPI_DEVICE_ACTION_IDENTIFY)
+                  fpi_device_identify_report (device, NULL, NULL,
+                                              g_steal_pointer (&error));
+                else
+                  fpi_device_verify_report (device, FPI_MATCH_ERROR, NULL,
+                                            g_steal_pointer (&error));
+                elanmoc2_identify_verify_complete (device, NULL);
               }
             else
               {
                 elanmoc2_identify_verify_complete (device,
                                                    g_steal_pointer (&error));
-                fpi_ssm_mark_completed (g_steal_pointer (&self->ssm));
               }
+            fpi_ssm_mark_completed (g_steal_pointer (&self->ssm));
             break;
           }
 
