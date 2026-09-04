@@ -620,6 +620,17 @@ elanmoc2_identify_run_state (FpiSsm *ssm, FpDevice *device)
                                             g_steal_pointer (&error));
                 elanmoc2_identify_verify_complete (device, NULL);
               }
+            else if (data_in[1] == ELANMOC2_RESP_NOT_ENROLLED)
+              {
+                /* The finger is simply not one of the enrolled ones: report
+                 * a plain no-match rather than an error. */
+                g_clear_error (&error);
+                if (fpi_device_get_current_action (device) == FPI_DEVICE_ACTION_IDENTIFY)
+                  fpi_device_identify_report (device, NULL, NULL, NULL);
+                else
+                  fpi_device_verify_report (device, FPI_MATCH_FAIL, NULL, NULL);
+                elanmoc2_identify_verify_complete (device, NULL);
+              }
             else
               {
                 elanmoc2_identify_verify_complete (device,
