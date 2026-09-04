@@ -1644,9 +1644,8 @@ fp_device_delete_print (FpDevice           *device,
 
   /* Succeed immediately if delete is not implemented. */
   if (!cls->delete || !(priv->features & FP_DEVICE_FEATURE_STORAGE_DELETE))
-  {
-      g_task_return_error (task,
-                         fpi_device_error_new (FP_DEVICE_ERROR_NOT_SUPPORTED));
+    {
+      g_task_return_boolean (task, TRUE);
       return;
     }
 
